@@ -14,8 +14,13 @@ class ICSVLoader(ABC):
 
     @abstractmethod
     def load(self) -> pd.DataFrame:
-        """Return raw DataFrame of the HR dataset."""
-        ...
+        """Read the employee dataset and return a pandas DataFrame."""
+        pass
+
+    @abstractmethod
+    def get_employee_by_id(self, employee_id: int) -> Any:
+        """Retrieve a single employee by ID."""
+        pass
 
 
 class IMLService(ABC):

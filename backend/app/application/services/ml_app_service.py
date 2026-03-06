@@ -9,7 +9,8 @@ from typing import Dict, Any
 from app.application.interfaces.interfaces import ICSVLoader, IMLService
 from app.application.dtos import (
     TrainResponseDTO, PredictRequestDTO, PredictResponseDTO, DashboardSummaryDTO,
-    DepartmentStatDTO, JobRoleStatDTO,
+    DepartmentStatDTO, JobRoleStatDTO, DepartmentPredictResponseDTO, EmployeeRiskDTO,
+    EmployeeDetailDTO,
 )
 
 logger = logging.getLogger(__name__)
@@ -80,6 +81,49 @@ class MLAppService:
             willAttrite=result.will_attrite,
             probability=round(result.probability, 4),
             riskLevel=risk,
+        )
+
+    def predict_department(self, department_name: str) -> DepartmentPredictResponseDTO:
+        """Fetch all employees in a department, predict for each, and sort by risk."""
+        if not self._ml.is_model_loaded():
+            raise RuntimeError("No trained model found. Please train first.")
+
+        # Load all (currently filters in memory, but could be optimized later)
+        df = self._loader.load()
+        dept_df = df[df["Department"] == department_name].copy()
+
+        if dept_df.empty:
+            return DepartmentPredictResponseDTO(department=department_name, employeeRisks=[])
+
+        risks = []
+        for _, row in dept_df.iterrows():
+            # Convert row to dict for prediction
+            features = row.to_dict()
+            result = self._ml.predict(features)
+
+            # Risk calculation
+            if result.probability < 0.35:
+                risk_lvl = "LOW"
+            elif result.probability < 0.65:
+                risk_lvl = "MEDIUM"
+            else:
+                risk_lvl = "HIGH"
+
+            risks.append(EmployeeRiskDTO(
+                employeeId=int(row["EmployeeNumber"]),
+                age=int(row["Age"]),
+                jobRole=row["JobRole"],
+                monthlyIncome=int(row["MonthlyIncome"]),
+                probability=round(result.probability, 4),
+                riskLevel=risk_lvl,
+            ))
+
+        # Sort descending by probability
+        risks.sort(key=lambda x: x.probability, reverse=True)
+
+        return DepartmentPredictResponseDTO(
+            department=department_name,
+            employeeRisks=risks
         )
 
     # ----------------------------------------------------------------------- #
@@ -156,6 +200,36 @@ class MLAppService:
             nonOvertimeAttritionRate=non_ot_attr_rate,
             ageDistribution=age_dist,
             incomeDistribution=income_dist,
+        )
+
+    def get_employee_detail(self, employee_id: int) -> EmployeeDetailDTO:
+        """Fetches full details for a single employee."""
+        employee = self._loader.get_employee_by_id(employee_id)
+        if not employee:
+            raise ValueError(f"Employee with ID {employee_id} not found")
+        
+        return EmployeeDetailDTO(
+            employee_id=employee.employee_id,
+            age=employee.age,
+            gender=employee.gender,
+            marital_status=employee.marital_status,
+            department=employee.department,
+            job_role=employee.job_role,
+            job_level=employee.job_level,
+            monthly_income=employee.monthly_income,
+            education_field=employee.education_field,
+            total_working_years=employee.total_working_years,
+            years_at_company=employee.years_at_company,
+            years_in_current_role=employee.years_in_current_role,
+            years_since_last_promotion=employee.years_since_last_promotion,
+            years_with_curr_manager=employee.years_with_curr_manager,
+            over_time=employee.over_time,
+            distance_from_home=employee.distance_from_home,
+            business_travel=employee.business_travel,
+            job_satisfaction=employee.job_satisfaction,
+            environment_satisfaction=employee.environment_satisfaction,
+            work_life_balance=employee.work_life_balance,
+            performance_rating=employee.performance_rating
         )
 
 

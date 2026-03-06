@@ -12,8 +12,10 @@ const api = axios.create({
 export const trainModel = () => api.post('/api/ml/train');
 export const predictAttrition = (data) => api.post('/api/ml/predict', data);
 export const getModelStatus = () => api.get('/api/ml/status');
+export const getDepartmentPrediction = (dept) => api.get(`/api/ml/predict/department/${dept}`);
 
 // ─── Dashboard ───────────────────────────────────────────────────────────── //
 export const getDashboardSummary = () => api.get('/api/dashboard/summary');
+export const getEmployeeDetail = (id) => api.get(`/api/dashboard/employee/${id}`);
 
 export default api;

@@ -8,7 +8,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 
 from app.api.dependencies import get_ml_app_service
-from app.application.dtos import PredictRequestDTO, PredictResponseDTO, TrainResponseDTO
+from app.application.dtos import (
+    PredictRequestDTO, PredictResponseDTO, TrainResponseDTO, DepartmentPredictResponseDTO
+)
 from app.application.services.ml_app_service import MLAppService
 
 logger = logging.getLogger(__name__)
@@ -55,6 +57,24 @@ async def predict_attrition(
     except Exception as exc:
         logger.exception("Prediction failed")
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(exc)}")
+
+
+@router.get(
+    "/predict/department/{department_name}",
+    response_model=DepartmentPredictResponseDTO,
+    summary="Predict attrition for all employees in a department",
+    description="Returns a list of employees in the department sorted by attrition risk.",
+)
+async def predict_department_attrition(
+    department_name: str,
+    service: MLAppService = Depends(get_ml_app_service),
+):
+    try:
+        # Use simple mapping if needed or direct from service
+        return service.predict_department(department_name)
+    except Exception as exc:
+        logger.exception("Department prediction failed")
+        raise HTTPException(status_code=500, detail=f"Error: {str(exc)}")
 
 
 @router.get(

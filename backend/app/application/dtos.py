@@ -65,6 +65,22 @@ class PredictResponseDTO(BaseModel):
     riskLevel: str = Field(..., description="LOW | MEDIUM | HIGH based on probability")
 
 
+class EmployeeRiskDTO(BaseModel):
+    """Attrition risk for a specific employee."""
+    employeeId: int
+    age: int
+    jobRole: str
+    monthlyIncome: int
+    probability: float
+    riskLevel: str
+
+
+class DepartmentPredictResponseDTO(BaseModel):
+    """Bulk prediction results for a department."""
+    department: str
+    employeeRisks: list[EmployeeRiskDTO]
+
+
 # --------------------------------------------------------------------------- #
 #  Dashboard DTOs
 # --------------------------------------------------------------------------- #
@@ -96,3 +112,28 @@ class DashboardSummaryDTO(BaseModel):
     nonOvertimeAttritionRate: float
     ageDistribution: Dict[str, int]
     incomeDistribution: Dict[str, int]
+
+
+class EmployeeDetailDTO(BaseModel):
+    """Full detail of an employee for the popup."""
+    employee_id: int
+    age: int
+    gender: str
+    marital_status: str
+    department: str
+    job_role: str
+    job_level: int
+    monthly_income: int
+    education_field: str
+    total_working_years: int
+    years_at_company: int
+    years_in_current_role: int
+    years_since_last_promotion: int
+    years_with_curr_manager: int
+    over_time: str
+    distance_from_home: int
+    business_travel: str
+    job_satisfaction: int
+    environment_satisfaction: int
+    work_life_balance: int
+    performance_rating: int
