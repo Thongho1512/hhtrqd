@@ -10,6 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import ml_router, dashboard_router
+from app.api import v1
 
 # ─── Logging Setup ──────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -53,6 +54,7 @@ def create_app() -> FastAPI:
     # ── Routers ───────────────────────────────────────────────────────────
     app.include_router(ml_router.router)
     app.include_router(dashboard_router.router)
+    app.include_router(v1.router)
 
     @app.get("/", tags=["Health"])
     async def root():

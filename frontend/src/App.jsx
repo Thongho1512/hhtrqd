@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import {
     LayoutDashboard, BrainCircuit, TrendingUp, Users, FlaskConical, Activity
 } from 'lucide-react';
-import Dashboard from './pages/Dashboard';
 import TrainModel from './pages/TrainModel';
-import Prediction from './pages/Prediction';
+import DepartmentPrediction from './pages/DepartmentPrediction';
+import AHPAnalysis from './pages/AHPAnalysis'; // Reusing or will create new
 import './index.css';
 
 const PAGES = {
-    dashboard: { label: 'Bảng điều khiển', icon: LayoutDashboard, component: Dashboard },
     train: { label: 'Huấn luyện mô hình', icon: FlaskConical, component: TrainModel },
-    predict: { label: 'Dự đoán nghỉ việc', icon: BrainCircuit, component: Prediction },
+    predict_dept: { label: 'Dự báo bộ phận (B1)', icon: BrainCircuit, component: DepartmentPrediction },
+    ahp_module: { label: 'Phân tích AHP (B4)', icon: Activity, component: AHPAnalysis },
 };
 
 export default function App() {
-    const [activePage, setActivePage] = useState('dashboard');
+    const [activePage, setActivePage] = useState('predict_dept');
     const Page = PAGES[activePage].component;
 
     return (

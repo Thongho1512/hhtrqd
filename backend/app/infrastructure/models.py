@@ -45,6 +45,13 @@ class Employee(Base):
     years_in_current_role = Column(Integer)
     years_since_last_promotion = Column(Integer)
     years_with_curr_manager = Column(Integer)
+    
+    # AHP Results
+    strategy_group = Column(String, nullable=True)
+    strategy_option_id = Column(String, nullable=True)
+    ahp_score = Column(Float, nullable=True)
+    ahp_rank = Column(Integer, nullable=True)
+    attention_level = Column(Integer, default=1) # 1-normal, 5-extreme
 
 class PredictionResult(Base):
     __tablename__ = "prediction_results"
@@ -55,3 +62,11 @@ class PredictionResult(Base):
     probability = Column(Float)
     model_version = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+class Note(Base):
+    __tablename__ = "notes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("employees.employee_id"))
+    content = Column(String)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    author = Column(String, default="User")

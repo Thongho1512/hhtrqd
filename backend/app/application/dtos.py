@@ -65,20 +65,38 @@ class PredictResponseDTO(BaseModel):
     riskLevel: str = Field(..., description="LOW | MEDIUM | HIGH based on probability")
 
 
+class RiskFactorDTO(BaseModel):
+    """Specific factor contributing to employee attrition risk."""
+    factor: str
+    contribution: float
+    direction: str  # "negative" (increases risk) or "positive" (decreases risk)
+
 class EmployeeRiskDTO(BaseModel):
-    """Attrition risk for a specific employee."""
+    """Attrition risk for a specific employee with strategic grouping."""
     employeeId: int
-    age: int
+    employeeName: str
     jobRole: str
+    tenureYears: int
     monthlyIncome: int
     probability: float
     riskLevel: str
+    riskGroup: str
+    riskGroupCode: str
+    color: str
+    performanceTier: str
+    topRiskFactors: list[RiskFactorDTO]
 
+class PredictionSummaryDTO(BaseModel):
+    highRiskCount: int
+    mediumRiskCount: int
+    lowRiskCount: int
+    featureImportance: Dict[str, float]
 
 class DepartmentPredictResponseDTO(BaseModel):
-    """Bulk prediction results for a department."""
-    department: str
+    """Bulk prediction results for a department with summary and grouping."""
+    department: Dict[str, Any]  # {id, name, total_employees}
     employeeRisks: list[EmployeeRiskDTO]
+    summary: PredictionSummaryDTO
 
 
 # --------------------------------------------------------------------------- #
