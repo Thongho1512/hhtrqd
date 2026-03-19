@@ -155,3 +155,70 @@ class EmployeeDetailDTO(BaseModel):
     environment_satisfaction: int
     work_life_balance: int
     performance_rating: int
+
+
+class EmployeeCreateDTO(BaseModel):
+    age: int
+    attrition: str = "No"
+    business_travel: str
+    daily_rate: int
+    department: str
+    distance_from_home: int
+    education: int
+    education_field: str
+    environment_satisfaction: int
+    gender: str
+    hourly_rate: int
+    job_involvement: int
+    job_level: int
+    job_role: str
+    job_satisfaction: int
+    marital_status: str
+    monthly_income: int
+    monthly_rate: int
+    num_companies_worked: int
+    over_time: str
+    percent_salary_hike: int
+    performance_rating: int
+    relationship_satisfaction: int
+    stock_option_level: int
+    total_working_years: int
+    training_times_last_year: int
+    work_life_balance: int
+    years_at_company: int
+    years_in_current_role: int
+    years_since_last_promotion: int
+    years_with_curr_manager: int
+
+class EmployeeUpdateDTO(BaseModel):
+    age: Optional[int] = None
+    attrition: Optional[str] = None
+    business_travel: Optional[str] = None
+    daily_rate: Optional[int] = None
+    department: Optional[str] = None
+    distance_from_home: Optional[int] = None
+    education: Optional[int] = None
+    education_field: Optional[str] = None
+    environment_satisfaction: Optional[int] = None
+    gender: Optional[str] = None
+    hourly_rate: Optional[int] = None
+    job_involvement: Optional[int] = None
+    job_level: Optional[int] = None
+    job_role: Optional[str] = None
+    job_satisfaction: Optional[int] = None
+    marital_status: Optional[str] = None
+    monthly_income: Optional[int] = None
+    monthly_rate: Optional[int] = None
+    num_companies_worked: Optional[int] = None
+    over_time: Optional[str] = None
+    percent_salary_hike: Optional[int] = None
+    performance_rating: Optional[int] = None
+    relationship_satisfaction: Optional[int] = None
+    stock_option_level: Optional[int] = None
+    total_working_years: Optional[int] = None
+    training_times_last_year: Optional[int] = None
+    work_life_balance: Optional[int] = None
+    years_at_company: Optional[int] = None
+    years_in_current_role: Optional[int] = None
+    years_since_last_promotion: Optional[int] = None
+    years_with_curr_manager: Optional[int] = None

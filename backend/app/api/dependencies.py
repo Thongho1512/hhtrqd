@@ -3,6 +3,7 @@ Dependency Injection container.
 Wires up infrastructure implementations to application services.
 """
 from functools import lru_cache
+from app.infrastructure.database import get_db
 
 from app.application.services.ml_app_service import MLAppService
 from app.infrastructure.database_loader import PostgresEmployeeLoader

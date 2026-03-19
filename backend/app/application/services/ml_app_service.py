@@ -82,48 +82,6 @@ class MLAppService:
             riskLevel=risk,
         )
 
-    def _classify_employee_group(self, risk_score: float, performance_tier: str) -> Dict[str, Any]:
-        """
-        [BƯỚC 2] Strategic classification logic based on risk and performance.
-        """
-        is_high_risk = risk_score >= 0.65
-
-        if is_high_risk and performance_tier in ["excellent", "good"]:
-            return {
-                "group_code": "PA_GIU_CHAN",
-                "group_name": "🔴 GIỮ CHÂN KHẨN CẤP",
-                "color": "#EF4444",
-                "description": "Nguy cơ cao + Giỏi — Ưu tiên can thiệp ngay"
-            }
-        elif is_high_risk and performance_tier == "poor":
-            return {
-                "group_code": "PA_THAY_THE",
-                "group_name": "🟠 THAY THẾ",
-                "color": "#F97316",
-                "description": "Nguy cơ cao + Kém — Chấp nhận nghỉ, kích hoạt tuyển dụng"
-            }
-        elif not is_high_risk and performance_tier in ["excellent", "good"]:
-            return {
-                "group_code": "PA_NUOI_DUONG",
-                "group_name": "🟢 NUÔI DƯỠNG",
-                "color": "#22C55E",
-                "description": "Nguy cơ thấp + Giỏi — Đưa vào talent pool, giữ động lực"
-            }
-        elif not is_high_risk and performance_tier == "average":
-            return {
-                "group_code": "PA_ON_DINH",
-                "group_name": "🔵 ỔN ĐỊNH",
-                "color": "#3B82F6",
-                "description": "Nguy cơ thấp + Trung bình — Duy trì, không can thiệp sâu"
-            }
-        else: # low risk + poor OR mid/other
-            return {
-                "group_code": "PA_PHONG_NGUA",
-                "group_name": "🟡 PHÒNG NGỪA",
-                "color": "#EAB308",
-                "description": "Nguy cơ trung bình — Đối thoại, cải thiện môi trường"
-            }
-
     def predict_department(self, department_name: str) -> DepartmentPredictResponseDTO:
         """[BƯỚC 1] Fetch all employees in a department, predict risk, and group strategically."""
         if not self._ml.is_model_loaded():
@@ -163,8 +121,6 @@ class MLAppService:
             elif rating == 3: perf_tier = "good"
             elif rating == 1: perf_tier = "poor"
             
-            group_info = self._classify_employee_group(prob, perf_tier)
-
             factors = []
             if row.get("OverTime") == "Yes":
                 factors.append(RiskFactorDTO(factor="OverTime", contribution=0.22, direction="negative"))
@@ -172,6 +128,12 @@ class MLAppService:
                 factors.append(RiskFactorDTO(factor="MonthlyIncome", contribution=0.28, direction="negative"))
             if row.get("JobSatisfaction") <= 2:
                 factors.append(RiskFactorDTO(factor="JobSatisfaction", contribution=0.18, direction="negative"))
+
+            # [REMOVED] Automatic strategic grouping (PA Grouping)
+            # Classification will now be handled via AHP analysis.
+            group_code = "NONE"
+            group_name = "Chưa phân nhóm"
+            group_color = "#9CA3AF"
 
             risks.append(EmployeeRiskDTO(
                 employeeId=int(row["EmployeeNumber"]),
@@ -181,9 +143,9 @@ class MLAppService:
                 monthlyIncome=int(row["MonthlyIncome"]),
                 probability=round(prob, 4),
                 riskLevel=risk_lvl,
-                riskGroup=group_info["group_name"],
-                riskGroupCode=group_info["group_code"],
-                color=group_info["color"],
+                riskGroup=group_name,
+                riskGroupCode=group_code,
+                color=group_color,
                 performanceTier=perf_tier,
                 topRiskFactors=factors
             ))

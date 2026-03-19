@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { Eye, FileText, Search, Filter } from 'lucide-react';
+import { Eye, FileText, Search, Filter, Activity } from 'lucide-react';
 import EmployeeModal from '../../components/EmployeeModal';
 
-export default function RiskTable({ employees }) {
+export default function RiskTable({ employees, onNavigate, setAhpContext }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterLevel, setFilterLevel] = useState('All');
-    const [filterGroup, setFilterGroup] = useState('All');
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
     const filtered = employees.filter(emp => {
         const matchesSearch = emp.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             emp.employeeId.toString().includes(searchTerm);
         const matchesLevel = filterLevel === 'All' || emp.riskLevel === filterLevel;
-        const matchesGroup = filterGroup === 'All' || emp.riskGroupCode === filterGroup;
-        return matchesSearch && matchesLevel && matchesGroup;
+        return matchesSearch && matchesLevel;
     });
 
     return (
@@ -39,14 +37,6 @@ export default function RiskTable({ employees }) {
                         <option value="MEDIUM">Trung bình</option>
                         <option value="LOW">Thấp</option>
                     </select>
-                    <select className="form-select" style={{ width: '180px', height: '38px' }} value={filterGroup} onChange={e => setFilterGroup(e.target.value)}>
-                        <option value="All">Mọi nhóm PA</option>
-                        <option value="PA_GIU_CHAN">GIỮ CHÂN</option>
-                        <option value="PA_THAY_THE">THAY THẾ</option>
-                        <option value="PA_NUOI_DUONG">NUÔI DƯỠNG</option>
-                        <option value="PA_ON_DINH">ỔN ĐỊNH</option>
-                        <option value="PA_PHONG_NGUA">PHÒNG NGỪA</option>
-                    </select>
                 </div>
             </div>
 
@@ -60,7 +50,6 @@ export default function RiskTable({ employees }) {
                             <th style={{ textAlign: 'center' }}>Thâm niên</th>
                             <th style={{ width: '200px' }}>Tỉ lệ nghỉ việc</th>
                             <th style={{ textAlign: 'center' }}>Mức độ</th>
-                            <th style={{ textAlign: 'center' }}>Nhóm PA</th>
                             <th style={{ textAlign: 'right' }}>Hành động</th>
                         </tr>
                     </thead>
@@ -91,14 +80,6 @@ export default function RiskTable({ employees }) {
                                         {emp.riskLevel}
                                     </span>
                                 </td>
-                                <td style={{ textAlign: 'center' }}>
-                                    <span style={{
-                                        padding: '4px 8px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800,
-                                        background: `${emp.color}20`, color: emp.color, border: `1px solid ${emp.color}40`
-                                    }}>
-                                        {emp.riskGroup.replace(/🔴 |🟠 |🟢 |🔵 |🟡 /g, '')}
-                                    </span>
-                                </td>
                                 <td style={{ textAlign: 'right' }}>
                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                                         <button
@@ -112,6 +93,26 @@ export default function RiskTable({ employees }) {
                                         <button className="btn btn-secondary" style={{ padding: '6px', borderRadius: '8px' }} title="Ghi chú">
                                             <FileText size={16} />
                                         </button>
+                                        {(emp.riskLevel === 'HIGH' || emp.riskLevel === 'MEDIUM') && (
+                                            <button
+                                                className="btn btn-primary"
+                                                style={{ padding: '6px', borderRadius: '8px', background: 'var(--accent-primary)' }}
+                                                title="Tiếp tục giải quyết với AHP"
+                                                onClick={() => {
+                                                    setAhpContext({
+                                                        id: emp.employeeId,
+                                                        name: emp.employeeName,
+                                                        role: emp.jobRole,
+                                                        risk: emp.riskLevel,
+                                                        prob: emp.probability,
+                                                        factors: emp.topRiskFactors || []
+                                                    });
+                                                    onNavigate('ahp_module');
+                                                }}
+                                            >
+                                                <Activity size={16} />
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
     Calculator, CheckCircle2, AlertCircle,
-    Save, Info, Users, CheckSquare, Square, ChevronDown, ChevronUp
+    Save, Info, Users, CheckSquare, Square, ChevronDown, ChevronUp, BrainCircuit
 } from 'lucide-react';
 import { computeAHP } from '../api/api';
 import { AHP_DEFAULT_MATRICES, AHP_ALTERNATIVES } from '../data/ahpDefaults';
 
 // ─── 6 Tiêu chí AHP ──────────────────────────────────────────────────────── //
-const CRITERIA_KEYS  = ['chi_phi', 'thoi_gian', 'do_phuc_tap', 'tac_dong', 'ben_vung', 'do_phu_hop'];
+const CRITERIA_KEYS = ['chi_phi', 'thoi_gian', 'do_phuc_tap', 'tac_dong', 'ben_vung', 'do_phu_hop'];
 const CRITERIA_LABEL = {
     chi_phi: 'Chi phí (Cost)',
     thoi_gian: 'Thời gian (Time)',
@@ -165,7 +165,7 @@ const cloneMatrix = (m) => m.map(r => [...r]);
 const loadDefault = (key) => AHP_DEFAULT_MATRICES[key].map(r => [...r]);
 
 // ─── Main Component ──────────────────────────────────────────────────────── //
-export default function AHPAnalysis() {
+export default function AHPAnalysis({ ahpContext, setAhpContext }) {
     const ALT_LABELS = AHP_ALTERNATIVES.map(a => a.name.split(' ')[0] + (a.name.split(' ')[1] ? ' ' + a.name.split(' ')[1] : ''));
     const ALT_LABELS_SHORT = AHP_ALTERNATIVES.map(a => a.name.split(' ')[0]);
 
@@ -201,7 +201,7 @@ export default function AHPAnalysis() {
             // Call backend with just criteria_matrix.
             const res = await computeAHP('PA_GIU_CHAN', criteriaMatrix, null);
             setCriteriaResults(res.data.criteria);
-            
+
             if (res.data.criteria.cr >= 0.1) {
                 setError('Chỉ số nhất quán CR của tiêu chí ≥ 0.1. Vui lòng điều chỉnh lại ma trận Bước 2.');
             } else {
@@ -240,11 +240,55 @@ export default function AHPAnalysis() {
         <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
             {/* Header */}
-            <div className="page-header">
-                <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Phân tích thứ bậc AHP</h2>
-                <p style={{ color: 'var(--text-secondary)' }}>
-                    Xác định nhóm chiến lược nhân sự tối ưu thông qua ma trận so sánh cặp Saaty
-                </p>
+            <div className="page-header" style={{ position: 'relative' }}>
+                <div>
+                    <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Phân tích thứ bậc AHP</h2>
+                    <p style={{ color: 'var(--text-secondary)' }}>
+                        Xác định nhóm chiến lược nhân sự tối ưu thông qua ma trận so sánh cặp Saaty
+                    </p>
+                </div>
+
+                {ahpContext && (
+                    <div style={{
+                        marginTop: '20px', padding: '16px', background: 'rgba(99,102,241,0.08)',
+                        border: '1px solid rgba(99,102,241,0.3)', borderRadius: '12px',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        animation: 'slideInRight 0.5s ease-out'
+                    }}>
+                        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                            <div style={{
+                                width: '48px', height: '48px', background: 'var(--accent-primary)',
+                                borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: 'white'
+                            }}>
+                                <BrainCircuit size={24} />
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>CẦU NỐI AI GỢI Ý CHO:</div>
+                                <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>{ahpContext.name} <span style={{ fontSize: '0.85rem', fontWeight: 500, opacity: 0.7 }}>({ahpContext.role})</span></div>
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            {ahpContext.factors.map((f, i) => (
+                                <span key={i} style={{
+                                    padding: '6px 12px', background: 'rgba(239,68,68,0.1)',
+                                    color: '#ef4444', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700,
+                                    border: '1px solid rgba(239,68,68,0.2)'
+                                }}>
+                                    {f.factor === 'OverTime' ? '🔴 Làm thêm quá giờ' :
+                                        f.factor === 'JobSatisfaction' ? '🔴 Hài lòng công việc thấp' : f.factor}
+                                </span>
+                            ))}
+                            <button
+                                className="btn btn-secondary btn-sm"
+                                style={{ marginLeft: '12px' }}
+                                onClick={() => setAhpContext(null)}
+                            >
+                                Xóa ngữ cảnh
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {error && (
@@ -270,6 +314,31 @@ export default function AHPAnalysis() {
                     So sánh tầm quan trọng tương đối giữa 6 tiêu chí. Nhập số (1–9) hoặc phân số (1/3, 1/5…).
                 </div>
 
+                {ahpContext && (
+                    <div style={{
+                        marginBottom: '20px', padding: '12px', background: 'rgba(34,197,94,0.05)',
+                        border: '1px solid rgba(34,197,94,0.2)', borderRadius: '10px', fontSize: '0.85rem',
+                        animation: 'fadeIn 0.8s ease'
+                    }}>
+                        <div style={{ color: '#22c55e', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                            <BrainCircuit size={16} /> Gợi ý chiến lược từ AI:
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', color: 'var(--text-secondary)' }}>
+                            {ahpContext.factors.map((f, i) => (
+                                <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                                    <div style={{ color: '#22c55e', marginTop: '4px' }}>•</div>
+                                    <div>
+                                        {f.factor === 'OverTime' ? <span>Yếu tố rủi ro <strong>Làm thêm giờ</strong>: Hãy ưu tiên tiêu chí <strong>Độ bền vững</strong> để giảm áp lực.</span> :
+                                            f.factor === 'JobSatisfaction' ? <span>Yếu tố <strong>Hài lòng thấp</strong>: Hãy ưu tiên <strong>Độ phù hợp</strong> để cải thiện môi trường.</span> :
+                                                f.factor === 'MonthlyIncome' ? <span>Yếu tố <strong>Thu nhập</strong>: Cân nhắc kỹ tiêu chí <strong>Chi phí</strong> khi đưa ra phương án.</span> :
+                                                    <span>Vấn đề <strong>{f.factor}</strong> detected: Cân nhắc điều chỉnh trọng số tiêu chí tương ứng.</span>}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 250px', gap: '24px', alignItems: 'start' }}>
                     <MatrixEditor
                         matrix={criteriaMatrix}
@@ -280,7 +349,7 @@ export default function AHPAnalysis() {
                         <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
                             <Info size={13} style={{ verticalAlign: 'middle', marginRight: '5px' }} />Thang đo Saaty
                         </div>
-                        {[['1','Quan trọng như nhau'],['3','Hơn một chút'],['5','Hơn rõ rệt'],['7','Hơn rất mạnh'],['9','Tuyệt đối hơn']].map(([v, l]) => (
+                        {[['1', 'Quan trọng như nhau'], ['3', 'Hơn một chút'], ['5', 'Hơn rõ rệt'], ['7', 'Hơn rất mạnh'], ['9', 'Tuyệt đối hơn']].map(([v, l]) => (
                             <div key={v} style={{ display: 'flex', gap: '10px', marginBottom: '6px', fontSize: '0.8rem' }}>
                                 <strong style={{ color: 'var(--accent-primary)', minWidth: '12px' }}>{v}</strong>
                                 <span style={{ color: 'var(--text-secondary)' }}>{l}</span>
@@ -490,6 +559,140 @@ export default function AHPAnalysis() {
                         </div>
                     </div>
 
+                    {/* ════ SYNTHESIS TABLE (matching reference image) ════ */}
+                    <div className="card" style={{ border: '1px solid rgba(99,102,241,0.2)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', color: 'var(--accent-primary)' }}>
+                            <Calculator size={18} />
+                            <div style={{ fontWeight: 800, fontSize: '1.05rem' }}>Tính điểm tổng hợp các phương án</div>
+                        </div>
+                        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+                            Điểm số các PA = Trọng số PA theo từng tiêu chí × Trọng số của tiêu chí
+                        </p>
+
+                        <div style={{ overflowX: 'auto' }}>
+                            <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', minWidth: '900px' }}>
+
+                                {/* LEFT: PA weights matrix */}
+                                <div style={{ flex: '1 1 auto' }}>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '6px', fontStyle: 'italic' }}>
+                                        Trọng số các PA theo các tiêu chí
+                                    </div>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+                                        <thead>
+                                            <tr style={{ background: 'rgba(99,102,241,0.12)' }}>
+                                                <th style={{ padding: '8px 10px', textAlign: 'left', borderBottom: '2px solid rgba(99,102,241,0.3)', fontWeight: 700 }}>Phương án</th>
+                                                {CRITERIA_KEYS.map(k => (
+                                                    <th key={k} style={{ padding: '8px 8px', textAlign: 'center', borderBottom: '2px solid rgba(99,102,241,0.3)', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                                                        {CRITERIA_SHORT[k]}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {AHP_ALTERNATIVES.map((alt, i) => {
+                                                const row = results.alternatives.summary_table.find(r => r.pa_index === i);
+                                                const isTop = row?.rank === 1;
+                                                return (
+                                                    <tr key={i} style={{
+                                                        background: isTop ? 'rgba(245,158,11,0.12)' : i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                                                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        <td style={{ padding: '8px 10px', fontWeight: isTop ? 800 : 500, color: isTop ? '#f59e0b' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                                            {alt.icon} <span style={{ fontSize: '0.75rem' }}>{alt.name.split('(')[0].trim()}</span>
+                                                        </td>
+                                                        {CRITERIA_KEYS.map((key, ci) => (
+                                                            <td key={key} style={{ padding: '8px 8px', textAlign: 'center', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+                                                                {results.alternatives.pa_weights_matrix[i][ci].toFixed(4)}
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* MIDDLE: Criteria weights */}
+                                <div style={{ flexShrink: 0, minWidth: '170px' }}>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '6px', fontStyle: 'italic' }}>
+                                        Trọng số của tiêu chí
+                                    </div>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+                                        <thead>
+                                            <tr style={{ background: 'rgba(99,102,241,0.12)' }}>
+                                                <th style={{ padding: '8px 10px', textAlign: 'left', borderBottom: '2px solid rgba(99,102,241,0.3)', fontWeight: 700 }}>Tiêu chí</th>
+                                                <th style={{ padding: '8px 10px', textAlign: 'center', borderBottom: '2px solid rgba(99,102,241,0.3)', fontWeight: 700 }}>Trọng số</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {CRITERIA_KEYS.map((k, i) => (
+                                                <tr key={k} style={{
+                                                    background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                                                    borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                                }}>
+                                                    <td style={{ padding: '8px 10px', color: 'var(--text-secondary)' }}>{CRITERIA_SHORT[k]}</td>
+                                                    <td style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 700, color: 'var(--accent-primary)', fontFamily: 'monospace' }}>
+                                                        {results.criteria.weights[i].toFixed(4)}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* RIGHT: Final scores & Ranking */}
+                                <div style={{ flexShrink: 0, minWidth: '170px' }}>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '6px', fontStyle: 'italic' }}>
+                                        Điểm số các PA
+                                    </div>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
+                                        <thead>
+                                            <tr style={{ background: 'rgba(99,102,241,0.12)' }}>
+                                                <th style={{ padding: '8px 10px', textAlign: 'left', borderBottom: '2px solid rgba(99,102,241,0.3)', fontWeight: 700 }}>Phương án</th>
+                                                <th style={{ padding: '8px 10px', textAlign: 'center', borderBottom: '2px solid rgba(99,102,241,0.3)', fontWeight: 700, color: '#f59e0b' }}>Trọng số</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {[...results.alternatives.summary_table]
+                                                .sort((a, b) => a.rank - b.rank)
+                                                .map((item) => {
+                                                    const alt = AHP_ALTERNATIVES[item.pa_index];
+                                                    const isTop = item.rank === 1;
+                                                    return (
+                                                        <tr key={item.pa_index} style={{
+                                                            background: isTop ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.02)',
+                                                            borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                                        }}>
+                                                            <td style={{ padding: '8px 10px', fontWeight: isTop ? 800 : 500, color: isTop ? '#f59e0b' : 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                                                                {alt.icon} <span style={{ fontSize: '0.75rem' }}>{alt.name.split('(')[0].trim()}</span>
+                                                            </td>
+                                                            <td style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 800, color: isTop ? '#f59e0b' : 'var(--text-primary)', fontFamily: 'monospace' }}>
+                                                                {item.total_score.toFixed(4)}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            <tr>
+                                                <td colSpan={2} style={{ padding: '8px 10px', textAlign: 'center', fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                                                    Điểm số các PA
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Formula reminder */}
+                        <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(0,0,0,0.15)', borderRadius: '8px', textAlign: 'center', border: '1px dashed rgba(255,255,255,0.07)' }}>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                                Score(PA) = ∑ [Trọng số PA tại Tiêu chí i] × [Trọng số Tiêu chí i]
+                            </div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                                Phương án có điểm cao nhất là lựa chọn tối ưu về mặt tổng thể
+                            </div>
+                        </div>
+                    </div>
                     {/* Final ranking display */}
                     <div className="card fade-in">
                         <div style={{

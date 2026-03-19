@@ -34,4 +34,17 @@ export const getEmployeeNotes = (empId) => api.get(`/api/v1/notes/${empId}`);
 export const createNote = (data) => api.post('/api/v1/notes/', data);
 export const updateAttentionLevel = (data) => api.put('/api/v1/notes/attention', data);
 
+// ─── Employee Management ────────────────────────────────────────────────── //
+export const listEmployees = () => api.get('/api/v1/employees/');
+export const createEmployee = (data) => api.post('/api/v1/employees/', data);
+export const updateEmployee = (id, data) => api.put(`/api/v1/employees/${id}`, data);
+export const deleteEmployee = (id) => api.delete(`/api/v1/employees/${id}`);
+export const importEmployees = (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post('/api/v1/employees/import', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
+
 export default api;
