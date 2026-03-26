@@ -26,7 +26,13 @@ export default function HRManagement() {
         setLoading(true);
         try {
             const res = await listEmployees();
-            setEmployees(res.data);
+            if (Array.isArray(res.data)) {
+                setEmployees(res.data);
+            } else {
+                console.error('API Error: Expected array but got:', res.data);
+                setEmployees([]);
+                alert('Lỗi: Server không trả về dữ liệu chuẩn. Vui lòng kiểm tra lại cấu hình VITE_API_URL của Backend.');
+            }
         } catch (err) {
             console.error('Error fetching employees:', err);
         } finally {

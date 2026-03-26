@@ -8,7 +8,7 @@ export default function RiskTable({ employees, onNavigate, setAhpContext }) {
     const [filterLevel, setFilterLevel] = useState('All');
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
-    const filtered = employees.filter(emp => {
+    const filtered = (employees || []).filter(emp => {
         const matchesSearch = emp.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             emp.employeeId.toString().includes(searchTerm);
         const matchesLevel = filterLevel === 'All' || emp.riskLevel === filterLevel;
