@@ -13,10 +13,13 @@ from app.application.interfaces.interfaces import ICSVLoader
 logger = logging.getLogger(__name__)
 
 # Absolute path to the dataset relative to this file's location
-_DEFAULT_CSV_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "..", "..", "..", "..",  # go up to source/
-    "WA_Fn-UseC_-HR-Employee-Attrition.csv",
+_DEFAULT_CSV_PATH = os.environ.get(
+    "DATA_PATH",
+    os.path.join(
+        os.path.dirname(__file__),
+        "..", "..", "..",  # go up to backend/
+        "WA_Fn-UseC_-HR-Employee-Attrition.csv",
+    )
 )
 
 
