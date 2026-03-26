@@ -27,7 +27,7 @@ export default function RiskCharts({ summary }) {
         datasets: [{
             data: [summary.highRiskCount, summary.mediumRiskCount, summary.lowRiskCount],
             backgroundColor: ['#ef4444', '#f59e0b', '#22c55e'],
-            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderColor: 'var(--bg-card)',
             borderWidth: 2,
             hoverOffset: 15
         }]
@@ -52,7 +52,7 @@ export default function RiskCharts({ summary }) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 12 } } }
+            legend: { position: 'bottom', labels: { color: '#64748b', font: { size: 12 } } }
         }
     };
 
@@ -73,8 +73,8 @@ export default function RiskCharts({ summary }) {
                             ...commonOptions,
                             indexAxis: 'y',
                             scales: {
-                                x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
-                                y: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                                x: { grid: { color: 'var(--border-color)' }, ticks: { color: '#64748b' } },
+                                y: { grid: { display: false }, ticks: { color: '#64748b' } }
                             }
                         }}
                     />

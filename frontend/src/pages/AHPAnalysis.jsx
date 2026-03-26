@@ -5,20 +5,25 @@ import {
 } from 'lucide-react';
 import { computeAHP } from '../api/api';
 import { AHP_DEFAULT_MATRICES, AHP_ALTERNATIVES } from '../data/ahpDefaults';
+import { t } from '../utils/translations';
 
-// ─── 6 Tiêu chí AHP ──────────────────────────────────────────────────────── //
-const CRITERIA_KEYS = ['chi_phi', 'thoi_gian', 'do_phuc_tap', 'tac_dong', 'ben_vung', 'do_phu_hop'];
+// ─── 6 Tiêu chí AHP (Practical & Final Selection - v2) ────────────────────── //
+const CRITERIA_KEYS = ['ai_result', 'thu_nhap', 'hieu_suat', 'hai_long', 'can_bang', 'cap_bac'];
 const CRITERIA_LABEL = {
-    chi_phi: 'Chi phí (Cost)',
-    thoi_gian: 'Thời gian (Time)',
-    do_phuc_tap: 'Độ phức tạp (Complexity)',
-    tac_dong: 'Tác động (Impact)',
-    ben_vung: 'Bền vững (Sustainability)',
-    do_phu_hop: 'Độ phù hợp (Fit)',
+    ai_result: 'Kết quả AI',
+    thu_nhap: 'Thu nhập hàng tháng',
+    hieu_suat: 'Hiệu suất công việc',
+    hai_long: 'Hài lòng công việc',
+    can_bang: 'Cân bằng cuộc sống',
+    cap_bac: 'Cấp bậc nhân viên',
 };
 const CRITERIA_SHORT = {
-    chi_phi: 'Cost', thoi_gian: 'Time', do_phuc_tap: 'Complex',
-    tac_dong: 'Impact', ben_vung: 'Sustain', do_phu_hop: 'Fit',
+    ai_result: 'Kết quả dự báo AI',
+    thu_nhap: 'Thu nhập hàng tháng',
+    hieu_suat: 'Hiệu suất công việc',
+    hai_long: 'Hài lòng công việc',
+    can_bang: 'Cân bằng cuộc sống',
+    cap_bac: 'Cấp bậc nhân viên',
 };
 
 const N_ALT = AHP_ALTERNATIVES.length; // 5
@@ -52,7 +57,7 @@ const MatrixCell = ({ value, onChange }) => {
         <input type="text"
             style={{
                 height: '36px', width: '100%', textAlign: 'center',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)',
+                background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
                 borderRadius: '6px', color: 'var(--text-primary)',
                 fontSize: '0.85rem', fontWeight: 600, outline: 'none', padding: '0 4px'
             }}
@@ -136,7 +141,7 @@ const WeightBar = ({ label, weight, rank }) => (
                 <strong style={{ color: 'var(--accent-primary)' }}>{(weight * 100).toFixed(2)}%</strong>
             </span>
         </div>
-        <div style={{ height: '5px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
+        <div style={{ height: '5px', background: 'var(--border-color)', borderRadius: '4px', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${weight * 100}%`, background: 'var(--gradient-hero)', transition: 'width 0.5s ease' }} />
         </div>
     </div>
@@ -237,13 +242,13 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
     };
 
     return (
-        <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div className="fade-in light-theme" style={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '24px', borderRadius: '16px', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
 
             {/* Header */}
             <div className="page-header" style={{ position: 'relative' }}>
                 <div>
-                    <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>Phân tích thứ bậc AHP</h2>
-                    <p style={{ color: 'var(--text-secondary)' }}>
+                    <h2 style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--text-primary)' }}>Phân tích thứ bậc AHP</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>
                         Xác định nhóm chiến lược nhân sự tối ưu thông qua ma trận so sánh cặp Saaty
                     </p>
                 </div>
@@ -265,7 +270,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                             </div>
                             <div>
                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>CẦU NỐI AI GỢI Ý CHO:</div>
-                                <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>{ahpContext.name} <span style={{ fontSize: '0.85rem', fontWeight: 500, opacity: 0.7 }}>({ahpContext.role})</span></div>
+                                <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>{ahpContext.name} <span style={{ fontSize: '0.85rem', fontWeight: 500, opacity: 0.7 }}>({t(ahpContext.role)})</span></div>
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '8px' }}>
@@ -275,8 +280,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                                     color: '#ef4444', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700,
                                     border: '1px solid rgba(239,68,68,0.2)'
                                 }}>
-                                    {f.factor === 'OverTime' ? '🔴 Làm thêm quá giờ' :
-                                        f.factor === 'JobSatisfaction' ? '🔴 Hài lòng công việc thấp' : f.factor}
+                                    🔴 {t(f.factor || f)}
                                 </span>
                             ))}
                             <button
@@ -302,7 +306,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
                         <StepBadge n={2} />
-                        <div style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '6px' }}>Ma trận so sánh cặp tiêu chí</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '6px' }}>Ma trận so sánh cặp tiêu chí</div>
                     </div>
                     {activeStep === 3 && (
                         <button className="btn btn-secondary btn-sm" onClick={resetToStep2}>
@@ -328,10 +332,11 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                                 <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
                                     <div style={{ color: '#22c55e', marginTop: '4px' }}>•</div>
                                     <div>
-                                        {f.factor === 'OverTime' ? <span>Yếu tố rủi ro <strong>Làm thêm giờ</strong>: Hãy ưu tiên tiêu chí <strong>Độ bền vững</strong> để giảm áp lực.</span> :
-                                            f.factor === 'JobSatisfaction' ? <span>Yếu tố <strong>Hài lòng thấp</strong>: Hãy ưu tiên <strong>Độ phù hợp</strong> để cải thiện môi trường.</span> :
-                                                f.factor === 'MonthlyIncome' ? <span>Yếu tố <strong>Thu nhập</strong>: Cân nhắc kỹ tiêu chí <strong>Chi phí</strong> khi đưa ra phương án.</span> :
-                                                    <span>Vấn đề <strong>{f.factor}</strong> detected: Cân nhắc điều chỉnh trọng số tiêu chí tương ứng.</span>}
+                                        {f.factor === 'OverTime' ? <span>Rủi ro <strong>Làm thêm giờ</strong>: Hãy ưu tiên <strong>Cân bằng cuộc sống</strong> hoặc <strong>Hài lòng công việc</strong>.</span> :
+                                            f.factor === 'JobSatisfaction' ? <span>Yếu tố <strong>Hài lòng thấp</strong>: Hãy ưu tiên <strong>Hài lòng công việc</strong> và <strong>Cấp bậc</strong>.</span> :
+                                                f.factor === 'MonthlyIncome' ? <span>Yếu tố <strong>Thu nhập</strong>: Cân nhắc kỹ tiêu chí <strong>Thu nhập hàng tháng</strong> khi đưa ra phương án.</span> :
+                                                    f.factor === 'PerformanceRating' ? <span>Yếu tố <strong>Hiệu suất thấp</strong>: Ưu tiên <strong>Hiệu suất công việc</strong> và <strong>KQ AI</strong>.</span> :
+                                                        <span>Vấn đề <strong>{f.factor}</strong> detect: Cân nhắc điều chỉnh trọng số tiêu chí tương ứng.</span>}
                                     </div>
                                 </div>
                             ))}
@@ -420,7 +425,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
             {activeStep === 3 && (
                 <div id="step-3-section" className="card fade-in">
                     <StepBadge n={3} />
-                    <div style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '6px' }}>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '6px' }}>
                         Ma trận so sánh các nhóm chiến lược theo từng tiêu chí
                     </div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
@@ -430,7 +435,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                     {/* Alternatives legend */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
                         {AHP_ALTERNATIVES.map((a, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', fontSize: '0.78rem' }}>
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', fontSize: '0.78rem' }}>
                                 <span>{a.icon}</span>
                                 <strong>{a.name}</strong>
                             </div>
@@ -453,7 +458,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                                             border: 'none', cursor: 'pointer', color: 'var(--text-primary)'
                                         }}
                                     >
-                                        <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>{CRITERIA_LABEL[key]}</span>
+                                        <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>{CRITERIA_LABEL[key]}</span>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                                                 Ma trận {N_ALT}×{N_ALT}
@@ -594,7 +599,7 @@ export default function AHPAnalysis({ ahpContext, setAhpContext }) {
                                                 const isTop = row?.rank === 1;
                                                 return (
                                                     <tr key={i} style={{
-                                                        background: isTop ? 'rgba(245,158,11,0.12)' : i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                                                        background: isTop ? 'rgba(245,158,11,0.12)' : i % 2 === 0 ? 'var(--bg-primary)' : 'transparent',
                                                         borderBottom: '1px solid rgba(255,255,255,0.05)'
                                                     }}>
                                                         <td style={{ padding: '8px 10px', fontWeight: isTop ? 800 : 500, color: isTop ? '#f59e0b' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>

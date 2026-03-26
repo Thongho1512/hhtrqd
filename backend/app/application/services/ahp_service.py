@@ -53,11 +53,11 @@ class AHPService:
         """
         Computes the final ranking by combining criteria weights with alternative scores.
         Input:
-            criteria_weights: List of weights for the 6 criteria [Cost, Time, Complexity, Impact, Sustainability, Fit]
+            criteria_weights: List of weights for the 6 criteria [AI, Thu nhập, Hiệu suất, Hài lòng, Cân bằng, Cấp bậc]
             alternatives_matrices: Dict of 6 matrices (one for each criterion)
         """
-        # Criteria names in order (as per prompt BƯỚC 4)
-        criteria_keys = ["chi_phi", "thoi_gian", "do_phuc_tap", "tac_dong", "ben_vung", "do_phu_hop"]
+        # Criteria names in order
+        criteria_keys = ["ai_result", "thu_nhap", "hieu_suat", "hai_long", "can_bang", "cap_bac"]
         
         results_per_criterion = {}
         all_pa_weights = []  # Shape: [n_criteria, n_alternatives]

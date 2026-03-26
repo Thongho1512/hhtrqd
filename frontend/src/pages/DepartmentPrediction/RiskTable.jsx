@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, FileText, Search, Filter, Activity } from 'lucide-react';
 import EmployeeModal from '../../components/EmployeeModal';
+import { t } from '../../utils/translations';
 
 export default function RiskTable({ employees, onNavigate, setAhpContext }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -61,11 +62,11 @@ export default function RiskTable({ employees, onNavigate, setAhpContext }) {
                                     <div style={{ fontWeight: 700 }}>{emp.employeeName}</div>
                                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{emp.employeeId}</div>
                                 </td>
-                                <td>{emp.jobRole}</td>
+                                <td>{t(emp.jobRole)}</td>
                                 <td style={{ textAlign: 'center' }}>{emp.tenureYears} năm</td>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                                        <div style={{ flex: 1, height: '6px', background: 'var(--bg-primary)', borderRadius: '3px', overflow: 'hidden' }}>
                                             <div style={{
                                                 height: '100%',
                                                 width: `${emp.probability * 100}%`,

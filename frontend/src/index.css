@@ -4,39 +4,39 @@
 
 /* ─── CSS Variables ─────────────────────────────────────────────────────── */
 :root {
-  /* Colors */
-  --bg-primary: #0a0d1a;
-  --bg-secondary: #0f1326;
-  --bg-card: #141829;
-  --bg-card-hover: #1a2035;
-  --bg-glass: rgba(20, 24, 41, 0.8);
+  /* Colors - LIGHT THEME (Default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-glass: rgba(255, 255, 255, 0.9);
 
-  --accent-primary: #6366f1;
-  --accent-secondary: #8b5cf6;
-  --accent-tertiary: #06b6d4;
-  --accent-success: #10b981;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
+  --accent-primary: #4f46e5;
+  --accent-secondary: #7c3aed;
+  --accent-tertiary: #0891b2;
+  --accent-success: #059669;
+  --accent-warning: #d97706;
+  --accent-danger: #dc2626;
 
-  --border-color: rgba(99, 102, 241, 0.2);
-  --border-glow: rgba(99, 102, 241, 0.5);
+  --border-color: #e2e8f0;
+  --border-glow: rgba(79, 70, 229, 0.2);
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
   --text-muted: #64748b;
 
   /* Gradients */
-  --gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
-  --gradient-card: linear-gradient(145deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
-  --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
-  --gradient-success: linear-gradient(135deg, #10b981, #059669);
-  --gradient-warning: linear-gradient(135deg, #f59e0b, #d97706);
+  --gradient-hero: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #0891b2 100%);
+  --gradient-card: linear-gradient(145deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.03));
+  --gradient-danger: linear-gradient(135deg, #dc2626, #b91c1c);
+  --gradient-success: linear-gradient(135deg, #059669, #047857);
+  --gradient-warning: linear-gradient(135deg, #d97706, #b45309);
 
   /* Shadows */
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.2);
-  --shadow-glow-danger: 0 0 20px rgba(239, 68, 68, 0.3);
-  --shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 30px rgba(79, 70, 229, 0.1);
+  --shadow-glow-danger: 0 0 20px rgba(220, 38, 38, 0.15);
+  --shadow-glow-success: 0 0 20px rgba(4, 120, 87, 0.15);
 
   /* Spacing */
   --radius-sm: 8px;
@@ -53,9 +53,43 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Dark Theme (Optional Toggle) ──────────────────────────────────────── */
+.dark-theme {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-card: #1f2937;
+  --bg-card-hover: #374151;
+  --bg-glass: rgba(17, 24, 39, 0.8);
+
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-tertiary: #06b6d4;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-danger: #ef4444;
+
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(99, 102, 241, 0.3);
+
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+
+  --gradient-card: linear-gradient(145deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+  --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+/* Light theme specific typography */
+* {
+  font-weight: 500;
+}
+
+strong, b, h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────────────── */
@@ -84,8 +118,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
   z-index: 0;
@@ -432,7 +466,7 @@ body::before {
 
 .form-input,
 .form-select {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 10px 14px;

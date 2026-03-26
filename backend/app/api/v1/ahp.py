@@ -48,7 +48,7 @@ async def compute_ahp(request: AHPComputeRequest):
         if not alt_matrices:
             n_options = len(STRATEGY_GROUPS[request.group_code]["options"])
             dummy_matrix = [[1.0] * n_options for _ in range(n_options)]
-            alt_matrices = {k: dummy_matrix for k in ["chi_phi", "thoi_gian", "do_phuc_tap", "tac_dong", "ben_vung", "do_phu_hop"]}
+            alt_matrices = {k: dummy_matrix for k in ["ai_result", "thu_nhap", "hieu_suat", "hai_long", "can_bang", "cap_bac"]}
 
         final_results = ahp_service.compute_ahp_alternatives(
             criteria_results["weights"],

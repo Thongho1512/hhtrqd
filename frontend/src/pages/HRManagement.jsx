@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Users, Plus, Upload, Search, Filter, MoreHorizontal, 
+import {
+    Users, Plus, Upload, Search, Filter, MoreHorizontal,
     Trash2, Edit, ChevronLeft, ChevronRight, FileSpreadsheet, Download
 } from 'lucide-react';
 import { listEmployees, deleteEmployee, importEmployees } from '../api/api';
 import EmployeeEditModal from '../components/EmployeeEditModal';
+import { t } from '../utils/translations';
 
 export default function HRManagement() {
     const [employees, setEmployees] = useState([]);
@@ -60,7 +61,7 @@ export default function HRManagement() {
         }
     };
 
-    const filteredEmployees = employees.filter(emp => 
+    const filteredEmployees = employees.filter(emp =>
         emp.employee_id.toString().includes(searchQuery) ||
         emp.job_role.toLowerCase().includes(searchQuery.toLowerCase()) ||
         emp.department.toLowerCase().includes(searchQuery.toLowerCase())
@@ -81,11 +82,11 @@ export default function HRManagement() {
                 <div style={{ display: 'flex', gap: '12px' }}>
                     <label className="btn btn-secondary" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Upload size={18} />
-                        {isImporting ? 'Đang Import...' : 'Import Excel/CSV'}
+                        {isImporting ? 'Đang Import...' : 'Nhập dữ liệu từ Excel/CSV'}
                         <input type="file" hidden accept=".csv, .xlsx, .xls" onChange={handleImport} disabled={isImporting} />
                     </label>
-                    <button 
-                        className="btn btn-primary" 
+                    <button
+                        className="btn btn-primary"
                         onClick={() => { setSelectedEmployee(null); setIsEditModalOpen(true); }}
                         style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                     >
@@ -98,10 +99,10 @@ export default function HRManagement() {
                 <div style={{ padding: '20px', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '16px' }}>
                     <div style={{ position: 'relative', flex: 1 }}>
                         <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                        <input 
-                            type="text" 
-                            className="form-input" 
-                            placeholder="Tìm kiếm theo ID, chức vụ hoặc phòng ban..." 
+                        <input
+                            type="text"
+                            className="form-input"
+                            placeholder="Tìm kiếm theo ID, chức vụ hoặc phòng ban..."
                             style={{ paddingLeft: '40px', width: '100%' }}
                             value={searchQuery}
                             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
@@ -111,7 +112,7 @@ export default function HRManagement() {
 
                 <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border-color)' }}>
+                        <thead style={{ background: 'var(--bg-primary)', borderBottom: '1px solid var(--border-color)' }}>
                             <tr>
                                 <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.85rem' }}>ID</th>
                                 <th style={{ padding: '16px', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.85rem' }}>THÔNG TIN CƠ BẢN</th>
@@ -140,36 +141,36 @@ export default function HRManagement() {
                                     <tr key={emp.employee_id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.2s' }} className="hover-row">
                                         <td style={{ padding: '16px', fontWeight: 700 }}>#{emp.employee_id}</td>
                                         <td style={{ padding: '16px' }}>
-                                            <div style={{ fontWeight: 600 }}>{emp.age} tuổi • {emp.gender === 'Female' ? 'Nữ' : 'Nam'}</div>
-                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{emp.marital_status}</div>
+                                            <div style={{ fontWeight: 600 }}>{emp.age} tuổi • {t(emp.gender)}</div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t(emp.marital_status)}</div>
                                         </td>
                                         <td style={{ padding: '16px' }}>
-                                            <div style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>{emp.department}</div>
-                                            <div style={{ fontSize: '0.8rem' }}>{emp.job_role} (Lvl {emp.job_level})</div>
+                                            <div style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>{t(emp.department)}</div>
+                                            <div style={{ fontSize: '0.8rem' }}>{t(emp.job_role)} (Lvl {emp.job_level})</div>
                                         </td>
                                         <td style={{ padding: '16px', fontWeight: 600, color: 'var(--accent-success)' }}>
                                             ${emp.monthly_income.toLocaleString()}
                                         </td>
                                         <td style={{ padding: '16px' }}>
-                                            <span style={{ 
+                                            <span style={{
                                                 padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800,
-                                                background: emp.over_time === 'Yes' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                background: emp.over_time === 'Yes' ? 'rgba(239, 68, 68, 0.1)' : 'var(--bg-secondary)',
                                                 color: emp.over_time === 'Yes' ? '#ef4444' : 'var(--text-muted)'
                                             }}>
-                                                {emp.over_time}
+                                                {t(emp.over_time)}
                                             </span>
                                         </td>
                                         <td style={{ padding: '16px', textAlign: 'center' }}>
                                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                <button 
-                                                    className="btn-icon" 
+                                                <button
+                                                    className="btn-icon"
                                                     style={{ color: 'var(--accent-primary)' }}
                                                     onClick={() => { setSelectedEmployee(emp); setIsEditModalOpen(true); }}
                                                 >
                                                     <Edit size={18} />
                                                 </button>
-                                                <button 
-                                                    className="btn-icon" 
+                                                <button
+                                                    className="btn-icon"
                                                     style={{ color: '#ef4444' }}
                                                     onClick={() => handleDelete(emp.employee_id)}
                                                 >
@@ -189,24 +190,24 @@ export default function HRManagement() {
                         Hiển thị {(page - 1) * rowsPerPage + 1} - {Math.min(page * rowsPerPage, filteredEmployees.length)} trong tổng số {filteredEmployees.length} nhân viên
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                        <button 
-                            className="btn btn-secondary btn-sm" 
+                        <button
+                            className="btn btn-secondary btn-sm"
                             disabled={page === 1}
                             onClick={() => setPage(page - 1)}
                         >
                             <ChevronLeft size={16} />
                         </button>
                         {[...Array(Math.min(5, totalPages))].map((_, i) => (
-                            <button 
-                                key={i} 
+                            <button
+                                key={i}
                                 className={`btn btn-sm ${page === i + 1 ? 'btn-primary' : 'btn-secondary'}`}
                                 onClick={() => setPage(i + 1)}
                             >
                                 {i + 1}
                             </button>
                         ))}
-                        <button 
-                            className="btn btn-secondary btn-sm" 
+                        <button
+                            className="btn btn-secondary btn-sm"
                             disabled={page === totalPages}
                             onClick={() => setPage(page + 1)}
                         >
@@ -217,17 +218,18 @@ export default function HRManagement() {
             </div>
 
             {isEditModalOpen && (
-                <EmployeeEditModal 
-                    employee={selectedEmployee} 
-                    onClose={() => setIsEditModalOpen(false)} 
+                <EmployeeEditModal
+                    employee={selectedEmployee}
+                    onClose={() => setIsEditModalOpen(false)}
                     onSaved={() => { setIsEditModalOpen(false); fetchEmployees(); }}
                 />
             )}
 
-            <style dangerouslySetInnerHTML={{ __html: `
-                .hover-row:hover { background: rgba(255,255,255,0.03); }
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                .hover-row:hover { background: var(--bg-secondary); }
                 .btn-icon { background: none; border: none; cursor: pointer; padding: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s, background 0.2s; }
-                .btn-icon:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+                .btn-icon:hover { opacity: 1; background: var(--bg-card-hover); }
                 .btn-sm { padding: 4px 10px; font-size: 0.8rem; }
             `}} />
         </div>

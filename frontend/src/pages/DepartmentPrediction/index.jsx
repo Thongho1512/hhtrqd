@@ -6,6 +6,7 @@ import {
 import { getDashboardSummary, predictDepartmentV1 } from '../../api/api';
 import RiskTable from './RiskTable';
 import RiskCharts from './RiskCharts';
+import { t } from '../../utils/translations';
 
 export default function DepartmentPrediction({ onNavigate, predictionData, setPredictionData, selectedDept, setSelectedDept, setAhpContext }) {
     const [departments, setDepartments] = useState([]);
@@ -58,7 +59,7 @@ export default function DepartmentPrediction({ onNavigate, predictionData, setPr
                         >
                             <option value="">-- Chọn phòng ban --</option>
                             {departments.map(dept => (
-                                <option key={dept} value={dept}>{dept}</option>
+                                <option key={dept} value={dept}>{t(dept)}</option>
                             ))}
                         </select>
                     </div>
@@ -114,7 +115,7 @@ export default function DepartmentPrediction({ onNavigate, predictionData, setPr
 
             {!predictionData && !loading && (
                 <div className="card" style={{ padding: '80px', textAlign: 'center', opacity: 0.7 }}>
-                    <div style={{ background: 'rgba(255,255,255,0.05)', width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                    <div style={{ background: 'var(--bg-secondary)', width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                         <BrainCircuit size={40} color="var(--accent-primary)" />
                     </div>
                     <h3>Sẵn sàng phân tích</h3>

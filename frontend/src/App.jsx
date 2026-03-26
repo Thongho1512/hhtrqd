@@ -9,8 +9,8 @@ import './index.css';
 
 const PAGES = {
     hr_management: { label: 'Quản lý Nhân sự', icon: Users, component: HRManagement },
-    predict_dept: { label: 'Dự báo bộ phận (B1)', icon: BrainCircuit, component: DepartmentPrediction },
-    ahp_module: { label: 'Phân tích AHP (B4)', icon: Activity, component: AHPAnalysis },
+    predict_dept: { label: 'Dự báo bộ phận', icon: BrainCircuit, component: DepartmentPrediction },
+    ahp_module: { label: 'Phân tích AHP', icon: Activity, component: AHPAnalysis },
 };
 
 export default function App() {
