@@ -78,7 +78,7 @@ export default function App() {
             {/* ── Sidebar ─────────────────────────────────── */}
             <aside className="sidebar">
                 <div className="sidebar-logo">
-                    <img src="/logo.svg" alt="Logo" style={{ width: '40px', height: '40px', marginBottom: '12px' }} />
+                    {/* <img src="/logo.png" alt="Logo" style={{ width: '48px', height: '48px', marginBottom: '12px', borderRadius: '12px' }} /> */}
                     <h1>HR Attrition AI</h1>
                     <p>Nền tảng Phân tích Nhân sự</p>
                 </div>
